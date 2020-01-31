@@ -2,7 +2,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import React, {Component} from "react";
 import {updateAccountUrl} from "../../constants";
-import {USER_NAME_SESSION_ATTRIBUTE_ID} from "../../components/authentication/AuthenticationService";
+import AuthenticationService, {USER_NAME_SESSION_ATTRIBUTE_ID, USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
+    USER_NAME_SESSION_ATTRIBUTE_ROLE} from "../../components/authentication/AuthenticationService";
 
 class ProfileUpdatePage extends Component {
 
@@ -49,7 +50,10 @@ class ProfileUpdatePage extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
+                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
+                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
             },
             body : json
         }).then(function (response) {

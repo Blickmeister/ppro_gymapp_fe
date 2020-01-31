@@ -54,4 +54,12 @@ export const updateTicketUrl = 'http://localhost:8080/tickets/update/';
 
 export const createEntranceUrl = 'http://localhost:8080/entrances/create/';
 
+export const getCountOfEntrancesUrl = "http://localhost:8080/statistics/getCountOFEntrances";
+
+export const getFavouriteDayUrl = "http://localhost:8080/statistics/getFavouriteDay";
+
+export const getAverageNumberOFEntrancesUrl = "http://localhost:8080/statistics/getAverageNumberOFEntrances";
+
+
+
 
