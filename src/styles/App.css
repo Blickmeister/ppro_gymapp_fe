@@ -34,6 +34,29 @@
   color: #61dafb;
 }
 
+.my-login-form {
+  width: 500px;
+  height: 100%;
+  margin: 50px auto;
+}
+.my-login-form form {
+  margin-bottom: 15px;
+  background: lightgray;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+}
+.my-login-form h2 {
+  margin: 0 0 15px;
+}
+.my-form-control, .btn {
+  min-height: 38px;
+  border-radius: 2px;
+}
+.btn-login {
+  font-size: 15px;
+  font-weight: bold;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import AuthenticationService from '../../components/authentication/AuthenticationService';
+import {Link} from "react-router-dom";
+import '../../styles/App.css'
 
 class LoginComponent extends Component {
 
@@ -56,22 +58,29 @@ class LoginComponent extends Component {
         }
         return (
             <div>
-                <h1>Login</h1>
+                <h1>Přihlášení</h1>
                 {renderMessage && this.state.isActive &&
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div className="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>{this.props.location.message}</strong>
-                    <button onClick={() => this.handleDismiss()} type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button onClick={() => this.handleDismiss()} type="button" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>}
-                <div className="container">
+                <div className="login-form">
                     {this.state.hasLoginFailed && <div className="alert alert-warning">Nesprávné přihlašovací údaje</div>}
                     {this.state.showSuccessMessage && <div>Login Sucessful</div>}
-                    User Name: <input type="text" name="username" value={this.state.username}
-                                      onChange={this.handleChange}/>
-                    Password: <input type="password" name="password" value={this.state.password}
-                                     onChange={this.handleChange}/>
-                    <button className="btn btn-success" onClick={this.loginClicked}>Login</button>
+
+                        <div className="form-group">
+                            <input type="text" name="username" value={this.state.username} className="form-control" onChange={this.handleChange} placeholder="Uživatelské jméno" required="required"/>
+                        </div>
+                        <div className="form-group">
+                            <input type="password" name="password" value={this.state.password} className="form-control" onChange={this.handleChange} placeholder="Heslo" required="required"/>
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-primary btn-block" onClick={this.loginClicked}>Přihlásit se</button>
+                        </div>
+
+                    <p className="text-center"><Link to="/account/create">Vytvořit účet</Link></p>
                 </div>
             </div>
         )
