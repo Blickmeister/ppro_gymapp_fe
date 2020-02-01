@@ -65,7 +65,6 @@ class NavigationBar extends Component {
                             </div>}
                             {!isUserLoggedIn && <Link className="btn btn-outline-light" to="/login">
                                 Přihlásit se</Link>}
-
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
