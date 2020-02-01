@@ -28,7 +28,7 @@ class CourseDetailPage extends Component {
     }
 
     componentDidMount() {
-        console.log("ID: " + this.props.match.params.id)
+        console.log("ID: " + this.props.match.params.id);
 
         this.setState({actualDateTime: new Date()});
 
@@ -62,8 +62,8 @@ class CourseDetailPage extends Component {
         })
             .then((response) => response.json())
             .then((jsonResponse) => {
-                this.setState({courseData: jsonResponse, loading: false})
-                this.setState({trainer: jsonResponse.trainer})
+                this.setState({courseData: jsonResponse, loading: false});
+                this.setState({trainer: jsonResponse.trainer});
                 this.setState({accountSignedCourses: jsonResponse.accountSignedCourses})
             }).catch((err) => console.error(err));
     }
@@ -96,7 +96,7 @@ class CourseDetailPage extends Component {
             console.error(error)
         });
 
-    }
+    };
 
     handleSignOut = () => {
         let json = JSON.stringify(this.state.actualDateTime);
@@ -125,7 +125,7 @@ class CourseDetailPage extends Component {
         }).catch(function (error) {
             console.error(error)
         });
-    }
+    };
 
     handleDelete = () => {
         const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
@@ -149,7 +149,7 @@ class CourseDetailPage extends Component {
             }).then(() => {
         }).catch((err) => console.error(err));
 
-    }
+    };
 
     render() {
         const coursesData = this.state.courseData;
@@ -161,12 +161,12 @@ class CourseDetailPage extends Component {
             <div className="container text-center">
                 <h2>Detail kurzu </h2>
                 <div className="align-items-center">
-                    <div class="panel panel-info align-items-center text-center">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Název: {coursesData.name}</h3>
+                    <div className="panel panel-info align-items-center text-center">
+                        <div className="panel-heading">
+                            <h3 className="panel-title">Název: {coursesData.name}</h3>
                         </div>
-                        <div class="panel-body">
-                            <table class="table table-user-information">
+                        <div className="panel-body">
+                            <table className="table table-user-information">
                                 <tbody>
                                 <tr>
                                     <td><b>Popis:</b></td>

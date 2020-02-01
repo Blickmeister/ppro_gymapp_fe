@@ -23,7 +23,7 @@ class ProfileDetail extends Component {
     }
 
     componentDidMount() {
-        console.log("ID: " + this.props.match.params.id)
+        console.log("ID: " + this.props.match.params.id);
         const role = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
         this.setState({role: role});
 
@@ -51,16 +51,14 @@ class ProfileDetail extends Component {
             <div className="container text-center">
                 <h2>Detail účtu </h2>
                 <div className="align-items-center">
-                    <div class="panel panel-info align-items-center text-center">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{this.props.location.firstName}</h3>
+                    <div className="panel panel-info align-items-center text-center">
+                        <div className="panel-heading">
+                            <h3 className="panel-title">{this.props.location.firstName}</h3>
                         </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-2 col-lg-2 " align="center"></div>
-
-                                <div class=" col-md-9 col-lg-9 ">
-                                    <table class="table table-user-information">
+                        <div className="panel-body">
+                            <div className="row">
+                                <div className=" col-md-9 col-lg-9 ">
+                                    <table className="table table-user-information">
                                         <tbody>
                                         <tr>
                                             <td><b>Jméno:</b></td>
