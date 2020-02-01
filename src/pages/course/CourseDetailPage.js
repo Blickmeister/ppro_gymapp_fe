@@ -87,7 +87,9 @@ class CourseDetailPage extends Component {
                 alert("Kurz byl zapsán");
                 window.location = '/course';
             } else {
-                alert("Kurz se nepodařilo zapsat");
+                response.json().then(function (res) {
+                    alert(res.message)
+                })
             }
         }).then(function (text) {
         }).catch(function (error) {
@@ -115,7 +117,9 @@ class CourseDetailPage extends Component {
                 alert("Kurz byl odepsán");
                 window.location = '/course';
             } else {
-                alert("Kurz se nepodařilo odepsat");
+                response.json().then(function (res) {
+                    alert(res.message)
+                })
             }
         }).then(function (text) {
         }).catch(function (error) {

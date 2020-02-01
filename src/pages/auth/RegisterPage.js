@@ -74,7 +74,9 @@ class RegisterPage extends Component {
                     alert("Účet byl vytvořen");
                     window.location = '/';
                 } else {
-                    alert("Účet se nepodařilo vytvořit");
+                    response.json().then(function (res) {
+                        alert(res.message)
+                    })
                 }
             }).then(function (text) {
                 console.log(text)
@@ -95,7 +97,9 @@ class RegisterPage extends Component {
                     alert("Účet byl vytvořen");
                     window.location = '/';
                 } else {
-                    alert("Účet se nepodařilo vytvořit");
+                    response.json().then(function (res) {
+                        alert(res.message)
+                    })
                 }
             }).then(function (text) {
                 console.log(text)
