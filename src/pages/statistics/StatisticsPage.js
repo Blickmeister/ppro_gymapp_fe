@@ -18,9 +18,6 @@ class StatisticsPage extends Component {
     }
 
     componentDidMount() {
-        const roleName = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
-        console.log(roleName)
-
         fetch(getCountOfEntrancesUrl, {
             method: 'GET',
             headers: {
@@ -85,13 +82,12 @@ class StatisticsPage extends Component {
                         <tr>Počet vstupů (dnes)</tr>
                         <td>{statisticsData}</td>
                         <tr>Nejoblíbenější den</tr>
-                        <tr>{statisticsData2}</tr>
+                        <td>{statisticsData2}</td>
                         <tr>Průměrná děnní návštěvnost (posledních 30dní)</tr>
-                        <tr>{statisticsData3}</tr>
+                        <td>{statisticsData3}</td>
                         </tbody>
                     </table>
                 </div>
-
             </div>
         );
     }

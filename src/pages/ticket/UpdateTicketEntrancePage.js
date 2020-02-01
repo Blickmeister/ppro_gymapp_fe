@@ -35,37 +35,44 @@ class UpdateTicketEntrancePage extends Component {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        let object = {};
-        data.forEach(function (value, key) {
-            object[key] = value;
-        });
+        let beginDate = data.get('beginDate');
+        let endDate = data.get('endDate');
+        if(beginDate > endDate) {
+            alert('Začátek kurzu nemůže být větší než konec kurzu');
+        } else {
 
-        let json = JSON.stringify(object);
-        console.log(json);
+            let object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
 
-        const ticketId = this.state.ticketId;
-        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
-        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
-        fetch(updateEntranceUrl + this.props.match.params.id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
-            },
-            body: json
-        }).then(function (response) {
-            if (response.ok) {
-                alert("Vstup byl upraven");
-                window.location = '/ticket/entrance/' + ticketId;
-            } else {
-                alert("Vstup se nepodařilo upravit");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
+            let json = JSON.stringify(object);
+            console.log(json);
+
+            const ticketId = this.state.ticketId;
+            const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+            const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+            fetch(updateEntranceUrl + this.props.match.params.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization': AuthenticationService.createBasicAuthToken(username, password)
+                },
+                body: json
+            }).then(function (response) {
+                if (response.ok) {
+                    alert("Vstup byl upraven");
+                    window.location = '/ticket/entrance/' + ticketId;
+                } else {
+                    alert("Vstup se nepodařilo upravit");
+                }
+            }).then(function (text) {
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
     }
 
     render() {

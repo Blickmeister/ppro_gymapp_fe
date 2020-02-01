@@ -132,40 +132,47 @@ class UpdateTicketPage extends Component {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        data.delete('accountId');
-        data.delete('ticketTypeId');
+        let beginDate = data.get('beginDate');
+        let endDate = data.get('endDate');
+        if(beginDate > endDate) {
+            alert('Začátek kurzu nemůže být větší než konec kurzu');
+        } else {
 
-        let object = {};
-        data.forEach(function (value, key) {
-            object[key] = value;
-        });
+            data.delete('accountId');
+            data.delete('ticketTypeId');
 
-        object["account"] = this.state.account;
-        object["ticketType"] = this.state.ticketType;
-        let json = JSON.stringify(object);
-        console.log(json);
-        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
-        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
-        fetch(updateTicketUrl + this.props.match.params.id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
-            },
-            body: json
-        }).then(function (response) {
-            if (response.ok) {
-                alert("Permanentka byla upravena");
-                window.location = '/ticket';
-            } else {
-                alert("Permanentku se nepodařilo upravit");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
+            let object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            object["account"] = this.state.account;
+            object["ticketType"] = this.state.ticketType;
+            let json = JSON.stringify(object);
+            console.log(json);
+            const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+            const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+            fetch(updateTicketUrl + this.props.match.params.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization': AuthenticationService.createBasicAuthToken(username, password)
+                },
+                body: json
+            }).then(function (response) {
+                if (response.ok) {
+                    alert("Permanentka byla upravena");
+                    window.location = '/ticket';
+                } else {
+                    alert("Permanentku se nepodařilo upravit");
+                }
+            }).then(function (text) {
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
     }
 
     render() {

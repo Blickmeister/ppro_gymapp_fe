@@ -65,38 +65,45 @@ class CreateTicketPage extends Component {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        let object = {};
+        let beginDate = data.get('beginDate');
+        let endDate = data.get('endDate');
+        if(beginDate > endDate) {
+            alert('Začátek kurzu nemůže být větší než konec kurzu');
+        } else {
 
-        data.forEach(function (value, key) {
-            object[key] = value;
-        });
-        let json = JSON.stringify(object);
+            let object = {};
 
-        const accountId = data.get("accountId");
-        const ticketTypeId = data.get("ticketTypeId");
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+            let json = JSON.stringify(object);
 
-        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
-        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
-        fetch(createTicketUrl +"/"+ accountId +"/"+ ticketTypeId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
-            },
-            body: json
-        }).then(function (response) {
-            if(response.ok) {
-                alert("Permanentka byla vytvořena");
-                window.location = '/ticket';
-            } else {
-                alert("Permanentku se nepodařilo vytvořit");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
+            const accountId = data.get("accountId");
+            const ticketTypeId = data.get("ticketTypeId");
+
+            const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+            const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+            fetch(createTicketUrl + "/" + accountId + "/" + ticketTypeId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                    'Access-Control-Allow-Origin': 'http://localhost:3000',
+                    'authorization': AuthenticationService.createBasicAuthToken(username, password)
+                },
+                body: json
+            }).then(function (response) {
+                if (response.ok) {
+                    alert("Permanentka byla vytvořena");
+                    window.location = '/ticket';
+                } else {
+                    alert("Permanentku se nepodařilo vytvořit");
+                }
+            }).then(function (text) {
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
     }
 
 

@@ -3,8 +3,9 @@
 }
 
 .Main-container {
-  margin-left: 5%;
-  margin-top: 2%;
+  margin-top: 10px;
+  margin-left: 250px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
 }
 
 .App-logo {

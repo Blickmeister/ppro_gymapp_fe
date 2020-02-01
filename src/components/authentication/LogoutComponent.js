@@ -2,9 +2,13 @@ import React, { Component } from 'react'
 import {Redirect} from "react-router-dom";
 
 class LogoutComponent extends Component {
-    render() {
+    componentDidMount() {
         alert('Byl jste úspěšně odhlášen');
-        return <Redirect to={{pathname: '/'}} />
+        window.location = '/';
+    }
+
+    render() {
+        return null;
 
     }
 }

@@ -87,40 +87,47 @@ class UpdateCoursePage extends Component {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        data.delete('trainerId');
+        let beginDate = data.get('beginDate');
+        let endDate = data.get('endDate');
+        if(beginDate > endDate) {
+            alert('Začátek kurzu nemůže být větší než konec kurzu');
+        } else {
 
-        let object = {};
-        data.forEach(function (value, key) {
-            object[key] = value;
-        });
+            data.delete('trainerId');
 
-        // pripojit trenera k jsonovi
-        object["trainer"] = this.state.trainer;
-        let json = JSON.stringify(object);
-        console.log(json);
+            let object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
 
-        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
-        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
-        fetch(updateCourseUrl + this.props.match.params.id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
-            },
-            body: json
-        }).then(function (response) {
-            if (response.ok) {
-                alert("Kurz byl upraven");
-                window.location = '/course';
-            } else {
-                alert("Kurz se nepodařilo upravit");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
+            // pripojit trenera k jsonovi
+            object["trainer"] = this.state.trainer;
+            let json = JSON.stringify(object);
+            console.log(json);
+
+            const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+            const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+            fetch(updateCourseUrl + this.props.match.params.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization': AuthenticationService.createBasicAuthToken(username, password)
+                },
+                body: json
+            }).then(function (response) {
+                if (response.ok) {
+                    alert("Kurz byl upraven");
+                    window.location = '/course';
+                } else {
+                    alert("Kurz se nepodařilo upravit");
+                }
+            }).then(function (text) {
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
     }
 
     render() {
