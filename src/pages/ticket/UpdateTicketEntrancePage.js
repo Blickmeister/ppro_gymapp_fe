@@ -1,22 +1,30 @@
-import React, {Component} from 'react';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import {createTicketTypeUrl} from "../../constants";
+import React, {Component} from "react";
+import {updateEntranceUrl} from "../../constants";
 import AuthenticationService, {
     USER_NAME_SESSION_ATTRIBUTE_NAME,
     USER_NAME_SESSION_ATTRIBUTE_PASSWORD
 } from "../../components/authentication/AuthenticationService";
 
-class CreateTicketTypePage extends Component {
+class UpdateTicketEntrancePage extends Component {
 
     constructor(props) {
         super(props);
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            name:'',
-            price:'',
-            entrancesTotal:'',
-        };
+            beginDate: '',
+            endDate: '',
+            ticketId:''
+        }
+    }
+
+    componentDidMount() {
+        const {beginDate, endDate} = this.props.location.entranceData;
+        this.setState({
+            beginDate: beginDate, endDate: endDate, ticketId:this.props.location.ticketId
+        });
     }
 
     handleChange = (event) => {
@@ -31,11 +39,15 @@ class CreateTicketTypePage extends Component {
         data.forEach(function (value, key) {
             object[key] = value;
         });
+
         let json = JSON.stringify(object);
+        console.log(json);
+
+        const ticketId = this.state.ticketId;
         const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
         const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
-        fetch(createTicketTypeUrl, {
-            method: 'POST',
+        fetch(updateEntranceUrl + this.props.match.params.id, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
@@ -44,45 +56,42 @@ class CreateTicketTypePage extends Component {
             },
             body: json
         }).then(function (response) {
-            if(!response.ok) {
-                alert("Typ permanentky se nepodařilo vytvořit");
+            if (response.ok) {
+                alert("Vstup byl upraven");
+                window.location = '/ticket/entrance/' + ticketId;
             } else {
-                alert("Typ permanentky byl úspěšně vytvořen");
+                alert("Vstup se nepodařilo upravit");
             }
-            console.log(json);
-            return response.text();
         }).then(function (text) {
-            console.log(text)
         }).catch(function (error) {
             console.error(error)
         });
     }
 
     render() {
-        return(
-            <Form onSubmit={this.handleSubmit}>
+        return (
+            <Form className="forms" onSubmit={this.handleSubmit}>
+
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Název typu permanentky</Form.Label>
-                    <Form.Control name="name" type="text" placeholder="Zadejte název typu permanentky" onChange={this.handleChange} required />
+                    <Form.Label>Začátek vstupu</Form.Label>
+                    <Form.Control defaultValue={this.state.beginDate} name="beginDate" type="datetime-local"
+                                  placeholder="Datum a čas začátku začátku vstupu"
+                                  required onChange={this.handleChange}/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Cena</Form.Label>
-                    <Form.Control name="price" type="number" placeholder="Cena typu permanentky" onChange={this.handleChange} required />
-                </Form.Group>
-
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Počet možných vstupů</Form.Label>
-                    <Form.Control name="entrancesTotal" type="number" placeholder="Počet možných vstupů" onChange={this.handleChange} required />
+                    <Form.Label>Konec vstupu</Form.Label>
+                    <Form.Control defaultValue={this.state.endDate} name="endDate" type="datetime-local"
+                                  placeholder="Datum a čas konce vstupu" onChange={this.handleChange}
+                                  required/>
                 </Form.Group>
 
                 <Button variant="primary" type="submit">
-                    Vytvořit typ permanentky
+                    Upravit
                 </Button>
             </Form>
-
-        )
+        );
     }
 }
 
-export default CreateTicketTypePage;
+export default UpdateTicketEntrancePage;

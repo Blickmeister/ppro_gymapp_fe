@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import '../../styles/NavigationBar.css'
 import {USER_NAME_SESSION_ATTRIBUTE_ROLE} from "../authentication/AuthenticationService";
+import {Link} from "react-router-dom";
 
 class SideBar extends Component {
 
@@ -24,11 +25,11 @@ class SideBar extends Component {
         const isAdmin = this.state.isAdmin;
         return (
             <div className="sidebar">
-                <a className="btn btn-outline-dark" href="/">Domovská stránka</a>
-                <a className="btn btn-outline-dark" href="/ticket">Permanentky</a>
-                <a className="btn btn-outline-dark" href="/course">Kurzy</a>
-                <a className="btn btn-outline-dark" href="/profile">Profil</a>
-                {isAdmin && <a className="btn btn-outline-dark" href="/statistics">Statistiky</a>}
+                <Link className="btn btn-outline-dark" to="/">Domovská stránka</Link>
+                <Link className="btn btn-outline-dark" to="/ticket">Permanentky</Link>
+                <Link className="btn btn-outline-dark" to="/course">Kurzy</Link>
+                <Link className="btn btn-outline-dark" to="/profile">Profil</Link>
+                {isAdmin && <Link className="btn btn-outline-dark" to="/statistics">Statistiky</Link>}
             </div>
         );
     }

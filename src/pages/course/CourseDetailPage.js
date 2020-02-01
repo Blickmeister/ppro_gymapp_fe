@@ -7,7 +7,7 @@ import AuthenticationService, {
     USER_NAME_SESSION_ATTRIBUTE_ROLE
 } from "../../components/authentication/AuthenticationService";
 import Button from "react-bootstrap/Button";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 class CourseDetailPage extends Component {
 
@@ -50,7 +50,6 @@ class CourseDetailPage extends Component {
             this.setState({isUnauthorised: false})
         }
 
-        //TODO aby se nemohl příhlásit aktualne prihlaseny pokud je uz prihlaseny na kurz
         this.setState({isSigned : this.props.location.isSigned});
 
         fetch(getCourseDetailUrl + this.props.match.params.id, {
@@ -58,7 +57,7 @@ class CourseDetailPage extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             }
         })
             .then((response) => response.json())
@@ -69,19 +68,18 @@ class CourseDetailPage extends Component {
             }).catch((err) => console.error(err));
     }
 
-    handleSigned = (event) => {
+    handleSigned = () => {
         let json = JSON.stringify(this.state.actualDateTime);
         console.log(this.state.actualDateTime);
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(signCourseUrl + this.props.match.params.id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {
@@ -98,18 +96,18 @@ class CourseDetailPage extends Component {
 
     }
 
-    handleSignOut = (event) => {
+    handleSignOut = () => {
         let json = JSON.stringify(this.state.actualDateTime);
         console.log(this.state.actualDateTime);
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(signOutCourseUrl + this.props.match.params.id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {
@@ -125,13 +123,16 @@ class CourseDetailPage extends Component {
         });
 }
 
-    handleDelete = (event) => {
+    handleDelete = () => {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(removeCourseUrl + this.props.match.params.id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then(function (response) {
@@ -141,7 +142,7 @@ class CourseDetailPage extends Component {
                 } else {
                     alert("Kurz se nepodařilo smazat");
                 }
-            }).then((text) => {
+            }).then(() => {
             }).catch((err) => console.error(err));
 
     }
@@ -162,8 +163,6 @@ class CourseDetailPage extends Component {
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-md-2 col-lg-2 " align="center"></div>
-
                                 <div class=" col-md-9 col-lg-9 ">
                                     <table class="table table-user-information">
                                         <tbody>

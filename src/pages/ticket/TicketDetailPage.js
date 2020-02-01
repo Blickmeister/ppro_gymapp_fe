@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../../styles/Table.css';
 import '../../styles/Detail.css';
-import {getTicketDetailUrl, removeTicketUrl, updateTicketUrl, createEntranceUrl} from "../../constants";
+import {getTicketDetailUrl, removeCourseUrl, removeTicketUrl} from "../../constants";
 import AuthenticationService, {
     USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
     USER_NAME_SESSION_ATTRIBUTE_ROLE
@@ -16,150 +16,102 @@ class TicketDetailPage extends Component {
         this.state = {
             ticketData: [],
             loading: true,
-            role: ""
+            ticketType: {},
+            account: {}
         };
     }
 
     componentDidMount() {
         console.log("ID: " + this.props.match.params.id)
 
-        const role = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
-        this.setState({role: role});
-        /*if (role === 'Trainer') {
-            this.setState({isTrainer: true})
-        } else {
-            this.setState({isTrainer: false})
-        }*/
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getTicketDetailUrl + this.props.match.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
             .then((jsonResponse) => {
-                this.setState({courseData: jsonResponse, loading: false})
-                this.setState({trainer: jsonResponse.trainer})
-                this.setState({accountSignedCourses: jsonResponse.accountSignedCourses})
+                this.setState({
+                    ticketData: jsonResponse, loading: false,
+                    ticketType: jsonResponse.ticketType, account: jsonResponse.account
+                })
             }).catch((err) => console.error(err));
     }
 
-    handleSigned = (event) => {
-        let json = JSON.stringify(this.state.actualDateTime);
-        console.log(this.state.actualDateTime);
-
-        fetch(signCourseUrl + this.props.match.params.id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
-            },
-            body: json
-        }).then(function (response) {
-            if(response.ok) {
-                alert("Kurz byl zapsán");
-            } else {
-                alert("Kurz se nepodařilo zapsat");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
-
-    }
-
-    handleDelete = (event) => {
+    handleDelete = () => {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(removeTicketUrl + this.props.match.params.id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
-            .then((response) => response.json())
-            .then((jsonResponse) => {
-                console.log(jsonResponse)
-            }).catch((err) => console.error(err));
+            .then(function (response) {
+                if(response.ok) {
+                    alert("Permanentka byla úspěšně smazána");
+                    window.location = '/ticket';
+                } else {
+                    alert("Permanentku se nepodařilo smazat");
+                }
+            }).then(() => {
+        }).catch((err) => console.error(err));
 
-        this.props.history.push('/course')
     }
 
     render() {
-        const coursesData = this.state.courseData;
-        const {firstName, lastName} = this.state.trainer;
-        const occupancy = this.state.accountSignedCourses.length;
-        const {isTrainer, canSignedCourse, isUnauthorised} = this.state;
-
+        const {ticketData, ticketType, account} = this.state;
+        let validString = "";
+        if (ticketData.valid) validString = "Platná";
+        else validString = "Neplatná";
         return (
             <div className="container text-center">
-                <h2>Detail kurzu </h2>
+                <h2>Detail permanentky </h2>
                 <div className="align-items-center">
-                    <div class="panel panel-info align-items-center text-center">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{this.props.location.courseName}</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-2 col-lg-2 " align="center"></div>
+                    <div className="panel panel-info align-items-center text-center">
+                        <table className="table table-user-information">
+                            <tbody>
+                            <tr>
+                                <td><b>Název:</b></td>
+                                <td>{ticketType.name}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Klient:</b></td>
+                                <td>{account.login}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Datum nákupu:</b></td>
+                                <td>{ticketData.beginDate}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Datum vypršení:</b></td>
+                                <td>{ticketData.endDate}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Platnost:</b></td>
+                                <td>{validString}</td>
+                            </tr>
 
-                                <div class=" col-md-9 col-lg-9 ">
-                                    <table class="table table-user-information">
-                                        <tbody>
-                                        <tr>
-                                            <td><b>Název:</b></td>
-                                            <td>{coursesData.name}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Popis:</b></td>
-                                            <td>{coursesData.description}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Trenér:</b></td>
-                                            <td>{firstName} {lastName}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Počet konání:</b></td>
-                                            <td>{coursesData.count}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Cena:</b></td>
-                                            <td>{coursesData.price}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Obsazenost:</b></td>
-                                            <td>{occupancy}/{coursesData.maxCapacity}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Od:</b></td>
-                                            <td>{coursesData.beginDate}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Do:</b></td>
-                                            <td>{coursesData.endDate}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    {isTrainer &&
-                                    <div>
-                                        <div className="text-center">
-                                            <Link to={{pathname : '/course/update/' + this.props.match.params.id , courseData : coursesData}} className="btn btn-secondary btn-space">Upravit</Link>
-                                            <Button onClick={this.handleDelete} className="btn btn-danger btn-space">Smazat</Button>
-                                        </div></div>}
-                                    {canSignedCourse && <Button onClick={this.handleSigned} className="btn btn-primary">
-                                        Přihlásit se na kurz</Button>}
-                                    {isUnauthorised &&
-                                    <a href="/login" className="btn btn-primary">Přihlásit se na kurz</a>}
-                                </div>
-                            </div>
-                        </div>
+                            <tr>
+                                <td><b>Možnosti:</b></td>
+                                <td><Link to={{
+                                    pathname: '/ticket/update/' + ticketData.id,
+                                    ticketData: ticketData
+                                }} className="btn btn-secondary btn-space">Upravit</Link>
+                                    <Button onClick={this.handleDelete}
+                                            className="btn btn-danger btn-space">Smazat</Button></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

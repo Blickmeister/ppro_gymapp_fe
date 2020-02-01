@@ -2,8 +2,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import React, {Component} from "react";
 import {updateAccountUrl} from "../../constants";
-import AuthenticationService, {USER_NAME_SESSION_ATTRIBUTE_ID, USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
-    USER_NAME_SESSION_ATTRIBUTE_ROLE} from "../../components/authentication/AuthenticationService";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_ID,
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class ProfileUpdatePage extends Component {
 
@@ -45,15 +47,15 @@ class ProfileUpdatePage extends Component {
 
         const actualUserId = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ID);
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(updateAccountUrl + this.props.match.params.id + "/" + actualUserId, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
-                'authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body : json
         }).then(function (response) {

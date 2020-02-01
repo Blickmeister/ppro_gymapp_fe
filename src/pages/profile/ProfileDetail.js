@@ -28,15 +28,15 @@ class ProfileDetail extends Component {
         this.setState({role: role});
 
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getAccountDetailUrl + this.props.match.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*','authorization' : AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
-
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())

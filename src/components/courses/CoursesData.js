@@ -14,13 +14,33 @@ class CoursesData extends Component {
         })
     }
 
-    renderTableDataCourses() {
-        return this.props.courses.map((course, index) => {
+    renderTableDataValidCourses() {
+        return this.props.coursesValid.map((course, index) => {
             const {id, name, beginDate, endDate, count, trainer, price, maxCapacity} = course;
             const newTo = {
                 pathname: "/course/detail/" + id,
-                courseName: name,
-                isSigned: false
+                courseName: name
+            };
+            return (
+                <tr key={index}>
+                    <td><Link to={newTo}>{name}</Link></td>
+                    <td>{beginDate}</td>
+                    <td>{endDate}</td>
+                    <td>{count}</td>
+                    <td>{trainer.firstName} {trainer.lastName}</td>
+                    <td>{price}</td>
+                    <td>{maxCapacity}</td>
+                </tr>
+            )
+        })
+    }
+
+    renderTableDataInValidCourses() {
+        return this.props.coursesInValid.map((course, index) => {
+            const {id, name, beginDate, endDate, count, trainer, price, maxCapacity} = course;
+            const newTo = {
+                pathname: "/course/detail/" + id,
+                courseName: name
             };
             return (
                 <tr key={index}>
@@ -59,19 +79,31 @@ class CoursesData extends Component {
     }
 
     render() {
-        let renderTable = false;
+        let renderTableUserCourses = false;
         if (this.props.userCourses.length === 0) {
-            renderTable = false;
+            renderTableUserCourses = false;
         } else {
-            renderTable = true;
+            renderTableUserCourses = true;
         }
-        console.log("Data: " + this.props.courses);
+        let renderTableValidCourses = false;
+        if (this.props.coursesValid.length === 0) {
+            renderTableValidCourses = false;
+        } else {
+            renderTableValidCourses = true;
+        }
+        let renderTableInValidCourses = false;
+        if (this.props.coursesInValid.length === 0) {
+            renderTableInValidCourses = false;
+        } else {
+            renderTableInValidCourses = true;
+        }
+
         if (this.props.courses.length === 0) {
             return <p className="text-danger">Nejsou vypsané žádné kurzy</p>;
         } else {
             return (
                 <div>
-                    {renderTable &&
+                    {renderTableUserCourses &&
                     <div>
                         <h3>Vaše kurzy:</h3>
                         <table id='tables'>
@@ -83,12 +115,28 @@ class CoursesData extends Component {
                     </div>
                     }
                     <h3>Všechny kurzy:</h3>
-                    <table id='tables'>
-                        <tbody>
-                        <tr>{this.renderTableHeader()}</tr>
-                        {this.renderTableDataCourses()}
-                        </tbody>
-                    </table>
+                    {renderTableValidCourses &&
+                    <div>
+                        <h4>Aktuální kurzy:</h4>
+                        <table id='tables'>
+                            <tbody>
+                            <tr>{this.renderTableHeader()}</tr>
+                            {this.renderTableDataValidCourses()}
+                            </tbody>
+                        </table>
+                    </div>
+                    }
+                    {renderTableInValidCourses &&
+                    <div>
+                        <h4>Proběhlé kurzy:</h4>
+                        <table id='tables'>
+                            <tbody>
+                            <tr>{this.renderTableHeader()}</tr>
+                            {this.renderTableDataInValidCourses()}
+                            </tbody>
+                        </table>
+                    </div>
+                    }
                 </div>
             );
         }

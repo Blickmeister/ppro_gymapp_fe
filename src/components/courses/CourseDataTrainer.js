@@ -14,8 +14,29 @@ class CoursesDataTrainer extends Component {
         })
     }
 
-    renderTableDataCourses() {
-        return this.props.courses.map((course, index) => {
+    renderTableDataValidCourses() {
+        return this.props.coursesValid.map((course, index) => {
+            const {id, name, beginDate, endDate, count, trainer, price, maxCapacity} = course;
+            const newTo = {
+                pathname: "/course/detail/" + id,
+                courseName: name
+            };
+            return (
+                <tr key={index}>
+                    <td><Link to={newTo}>{name}</Link></td>
+                    <td>{beginDate}</td>
+                    <td>{endDate}</td>
+                    <td>{count}</td>
+                    <td>{trainer.firstName} {trainer.lastName}</td>
+                    <td>{price}</td>
+                    <td>{maxCapacity}</td>
+                </tr>
+            )
+        })
+    }
+
+    renderTableDataInValidCourses() {
+        return this.props.coursesInValid.map((course, index) => {
             const {id, name, beginDate, endDate, count, trainer, price, maxCapacity} = course;
             const newTo = {
                 pathname: "/course/detail/" + id,
@@ -57,14 +78,25 @@ class CoursesDataTrainer extends Component {
     }
 
     render() {
-        let renderTable = false;
+        let renderTableTrainerCourses = false;
         if (this.props.coursesTrainer.length === 0) {
-            renderTable = false;
+            renderTableTrainerCourses = false;
         } else {
-            renderTable = true;
+            renderTableTrainerCourses = true;
+        }
+        let renderTableValidCourses = false;
+        if (this.props.coursesValid.length === 0) {
+            renderTableValidCourses = false;
+        } else {
+            renderTableValidCourses = true;
+        }
+        let renderTableInValidCourses = false;
+        if (this.props.coursesInValid.length === 0) {
+            renderTableInValidCourses = false;
+        } else {
+            renderTableInValidCourses = true;
         }
 
-        console.log("Data: " + this.props.courses);
         if (this.props.courses.length === 0) {
             return <div>
                 <Link to="/course/create" className="btn btn-primary">Vytvořit nový kurz</Link>
@@ -75,7 +107,7 @@ class CoursesDataTrainer extends Component {
                 <div>
                     <h3>Vaše kurzy:</h3>
                     <Link to="/course/create" className="btn btn-primary">Vytvořit nový kurz</Link>
-                    {renderTable &&
+                    {renderTableTrainerCourses &&
                     <div>
                         <table id='tables'>
                             <tbody>
@@ -86,12 +118,28 @@ class CoursesDataTrainer extends Component {
                     </div>
                     }
                     <h3>Všechny kurzy:</h3>
-                    <table id='tables'>
-                        <tbody>
-                        <tr>{this.renderTableHeader()}</tr>
-                        {this.renderTableDataCourses()}
-                        </tbody>
-                    </table>
+                    {renderTableValidCourses &&
+                        <div>
+                            <h4>Aktuální kurzy:</h4>
+                            <table id='tables'>
+                                <tbody>
+                                <tr>{this.renderTableHeader()}</tr>
+                                {this.renderTableDataValidCourses()}
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    {renderTableInValidCourses &&
+                    <div>
+                        <h4>Proběhlé kurzy:</h4>
+                        <table id='tables'>
+                            <tbody>
+                            <tr>{this.renderTableHeader()}</tr>
+                            {this.renderTableDataInValidCourses()}
+                            </tbody>
+                        </table>
+                    </div>
+                    }
                 </div>
 
             );

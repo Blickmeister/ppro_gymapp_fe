@@ -66,10 +66,8 @@ class LoginComponent extends Component {
                     </button>
                 </div>}
                 <div className="container">
-                    {/*<ShowInvalidCredentials hasLoginFailed={this.state.hasLoginFailed}/>*/}
-                    {this.state.hasLoginFailed && <div className="alert alert-warning">Invalid Credentials</div>}
+                    {this.state.hasLoginFailed && <div className="alert alert-warning">Nesprávné přihlašovací údaje</div>}
                     {this.state.showSuccessMessage && <div>Login Sucessful</div>}
-                    {/*<ShowLoginSuccessMessage showSuccessMessage={this.state.showSuccessMessage}/>*/}
                     User Name: <input type="text" name="username" value={this.state.username}
                                       onChange={this.handleChange}/>
                     Password: <input type="password" name="password" value={this.state.password}
