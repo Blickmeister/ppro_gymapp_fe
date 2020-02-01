@@ -46,21 +46,21 @@ class App extends Component {
                             <Route exact path="/account/create" component={RegisterPage}/>
                             <Route path="/login" component={LoginPage} />
                             <Route path="/logout" exact component={LogoutComponent} />
-                            <Route  exact path="/role/create" component={CreateRole}/>
+                            <AuthRouteAdmin  exact path="/role/create" component={CreateRole}/>
                             <Route exact path="/course" component={CoursePage}/>
-                            <Route exact path="/role/update" component={UpdateRole}/>
+                            <AuthRouteAdmin exact path="/role/update" component={UpdateRole}/>
                             <Route exact path="/course/detail/:id" component={CourseDetailPage}/>
-                            <Route exact path="/course/update/:id" component={UpdateCoursePage}/>
+                            <AuthRouteTrainer exact path="/course/update/:id" component={UpdateCoursePage}/>
                             <AuthRouteTrainer exact path="/course/create" component={CreateCoursePage}/>
                             <AuthenticatedRoute exact path="/profile" component={ProfilePage}/>
-                            <Route exact path="/profile/detail/:id" component={ProfileDetail}/>
-                            <Route exact path="/profile/update/:id" component={ProfileUpdatePage}/>
+                            <AuthenticatedRoute exact path="/profile/detail/:id" component={ProfileDetail}/>
+                            <AuthenticatedRoute exact path="/profile/update/:id" component={ProfileUpdatePage}/>
                             <AuthenticatedRoute exact path="/ticket" component={TicketPage}/>
                             <AuthenticatedRoute exact path="/ticket/detail/:id" component={TicketDetailPage}/>
                             <AuthenticatedRoute exact path="/ticket/update/:id" component={UpdateTicketPage}/>
                             <AuthenticatedRoute exact path="/ticket/entrance/:id" component={TicketEntrancePage}/>
                             <AuthRouteEmployee exact path="/ticket/entrance/update/:id" component={UpdateTicketEntrancePage}/>
-                            <AuthenticatedRoute path="/ticket/create" component={CreateTicketPage}/>
+                            <AuthRouteEmployee exact path="/ticket/create" component={CreateTicketPage}/>
                             <AuthenticatedRoute path="/ticketType/create" component={CreateTicketTypePage}/>
                             <AuthenticatedRoute path="/ticketType/update/:id" component={UpdateTicketTypePage}/>
                             <AuthRouteAdmin path="/statistics" component={StatisticsPage}/>

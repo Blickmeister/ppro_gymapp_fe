@@ -2,6 +2,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import React, {Component} from "react";
 import {updateEntranceUrl} from "../../constants";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME,
+    USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class UpdateTicketEntrancePage extends Component {
 
@@ -12,14 +16,14 @@ class UpdateTicketEntrancePage extends Component {
         this.state = {
             beginDate: '',
             endDate: '',
+            ticketId:''
         }
     }
 
     componentDidMount() {
         const {beginDate, endDate} = this.props.location.entranceData;
-        console.log(this.props.location.ticketData);
         this.setState({
-            beginDate: beginDate, endDate: endDate
+            beginDate: beginDate, endDate: endDate, ticketId:this.props.location.ticketId
         });
     }
 
@@ -39,18 +43,22 @@ class UpdateTicketEntrancePage extends Component {
         let json = JSON.stringify(object);
         console.log(json);
 
+        const ticketId = this.state.ticketId;
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(updateEntranceUrl + this.props.match.params.id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {
             if (response.ok) {
                 alert("Vstup byl upraven");
-                window.location = '/ticket/entrance/' + this.props.match.params.id;
+                window.location = '/ticket/entrance/' + ticketId;
             } else {
                 alert("Vstup se nepodařilo upravit");
             }

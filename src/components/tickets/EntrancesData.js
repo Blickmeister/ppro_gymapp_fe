@@ -6,19 +6,35 @@ import AuthenticationService, {
     USER_NAME_SESSION_ATTRIBUTE_ROLE
 } from "../authentication/AuthenticationService";
 import {Button} from "react-bootstrap";
-import {
-    createEntranceUrl, getAccountDetailUrl, getEntranceDetailUrl,
-    removeEntranceUrl, updateEntranceEndDateUrl,
-    updateEntranceUrl
-} from "../../constants";
+import {createEntranceUrl, removeEntranceUrl, updateEntranceEndDateUrl} from "../../constants";
 
 class EntrancesData extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            // TODO zapsat jen kdyz je odepsano
-            canAddEntrance: true
+            canAddEntrance: true,
+        }
+    }
+
+    componentDidMount() {
+        const entrances = this.props.entrances;
+        let openEntrance = {};
+        if (entrances.length === 0) {
+            openEntrance = {};
+        } else {
+            for (let i = 0; i < entrances.length; i++) {
+                if (entrances[i].endDate === null) {
+                    openEntrance = entrances[i];
+                }
+            }
+        }
+        console.log(openEntrance);
+        let isMyObjectEmpty = !Object.keys(openEntrance).length;
+        if (isMyObjectEmpty) {
+            this.setState({canAddEntrance: true})
+        } else {
+            this.setState({canAddEntrance: false})
         }
     }
 
@@ -45,20 +61,32 @@ class EntrancesData extends Component {
 
     renderTableData(isEmployee) {
         return this.props.entrances.map((entrance, index) => {
+            let isActualEntrance = false;
+            if (index === this.props.entrances.length - 1) {
+                isActualEntrance = true;
+            } else {
+                isActualEntrance = false;
+            }
             const {id, beginDate, endDate} = entrance;
             const newTo = {
                 pathname: "/ticket/entrance/update/" + id,
-                entranceData: entrance
+                entranceData: entrance,
+                ticketId: this.props.ticketId
             };
             return (
                 <tr key={id}>
                     <td>{beginDate}</td>
                     <td>{endDate}</td>
                     {isEmployee && <td>
-                        <Button onClick={() => this.handleEndEntrance(id)} className="btn btn-primary">Zapsat odchod</Button>
-                        <Link to={newTo} className="btn btn-secondary">Upravit</Link>
-                        <Button onClick={() => this.handleDelete(id)} className="btn btn-danger btn-space">Smazat</Button>
-                    </td>}
+                        {isActualEntrance && !this.state.canAddEntrance &&
+                        <Button onClick={() => this.handleEndEntrance(id)} className="btn btn-primary">
+                            Zapsat odchod</Button>
+                        }
+                        <Link to={newTo} className="btn btn-secondary  btn-space">Upravit</Link>
+                        <Button onClick={() => this.handleDelete(id)}
+                                className="btn btn-danger">Smazat</Button>
+                    </td>
+                    }
                 </tr>
             )
         })
@@ -71,15 +99,15 @@ class EntrancesData extends Component {
         let json = JSON.stringify(object);
         console.log(this.props.ticketId);
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(createEntranceUrl + this.props.ticketId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
-                'authorization': AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {
@@ -95,6 +123,8 @@ class EntrancesData extends Component {
         }).catch(function (error) {
             console.error(error)
         });
+
+
     };
 
     handleEndEntrance = (id) => {
@@ -104,15 +134,15 @@ class EntrancesData extends Component {
         object["endDate"] = actualDateTime;
         let json = JSON.stringify(object);
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(updateEntranceEndDateUrl + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
-                'authorization': AuthenticationService.createBasicAuthToken(sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_NAME), sessionStorage
-                    .getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {
@@ -129,12 +159,15 @@ class EntrancesData extends Component {
     };
 
     handleDelete = (id) => {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(removeEntranceUrl + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then(function (response) {
@@ -151,6 +184,7 @@ class EntrancesData extends Component {
 
     render() {
         const canAddEntrance = this.state.canAddEntrance;
+        console.log(canAddEntrance);
         let isEmployee = false;
         const roleName = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
         if (roleName === 'Employee' || roleName === 'Admin') {
@@ -162,7 +196,8 @@ class EntrancesData extends Component {
             return (
                 <div>
                     <p className="text-danger">Nejsou k dispozici žádné vstupy</p>
-                    {canAddEntrance && this.props.isValid && <Button onClick={this.handleAddEntrance} className="btn btn-primary">
+                    {isEmployee && canAddEntrance && this.props.isValid &&
+                    <Button onClick={this.handleAddEntrance} className="btn btn-primary">
                         Zapsat vstup</Button>}
                 </div>
             );
@@ -170,8 +205,11 @@ class EntrancesData extends Component {
             return (
                 <div>
                     <h3>Vstupy:</h3>
-                    {canAddEntrance && this.props.isValid && <Button onClick={this.handleAddEntrance} className="btn btn-primary">
+                    {isEmployee && canAddEntrance && this.props.isValid &&
+                    <Button onClick={this.handleAddEntrance} className="btn btn-primary">
                         Zapsat vstup</Button>}
+                    {isEmployee && !canAddEntrance && <p className="text-danger">Pro zapsání dalšího vstupu nejprve zapište odchod</p>}
+                    {isEmployee && !this.props.isValid && <p className="alert-info">Nelze zapsat vstup - permanentka není platná</p>}
                     <table id='tables'>
                         <tbody>
                         <tr>{this.renderTableHeader(isEmployee)}</tr>

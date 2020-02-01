@@ -6,8 +6,12 @@ import {
     getAllClients,
     getTicketTypeDetailUrl,
     getTicketTypes,
-    updateCourseUrl, updateTicketUrl
+    updateTicketUrl
 } from "../../constants";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME,
+    USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class UpdateTicketPage extends Component {
 
@@ -51,12 +55,15 @@ class UpdateTicketPage extends Component {
             beginDate: beginDate, endDate: endDate
         });
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getAllClients, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -70,7 +77,8 @@ class UpdateTicketPage extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -85,13 +93,15 @@ class UpdateTicketPage extends Component {
     };
 
     handleChangeClientId = (event) => {
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getAccountDetailUrl + event.target.value, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -101,13 +111,15 @@ class UpdateTicketPage extends Component {
     }
 
     handleChangeTicketTypeId = (event) => {
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getTicketTypeDetailUrl + event.target.value, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -132,13 +144,15 @@ class UpdateTicketPage extends Component {
         object["ticketType"] = this.state.ticketType;
         let json = JSON.stringify(object);
         console.log(json);
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(updateTicketUrl + this.props.match.params.id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {

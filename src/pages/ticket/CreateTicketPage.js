@@ -3,6 +3,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import '../../styles/Forms.css'
 import {createTicketUrl, getAllClients, getTicketTypes} from '../../constants/index';
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME,
+    USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class CreateTicketPage extends Component {
 
@@ -18,33 +22,16 @@ class CreateTicketPage extends Component {
         };
     }
 
-    //  componentDidMount() {
-    //TODO vzor pro filtrace dle atributu
-    /*fetch(ticketUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': true,
-            'Access-Control-Allow-Origin': 'http://localhost:3000'
-        }
-    })
-        .then((response) => response.json())
-        .then((jsonResponse) => {
-            let ticketTypes = jsonResponse.map(function(type,i) {
-                return type.ticketType.type;
-            });
-            this.setState({ticketType:ticketTypes})
-            console.log(jsonResponse)
-        }).catch((err) => console.error(err));
-     */
-    //   }
     componentDidMount() {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getAllClients, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -58,7 +45,8 @@ class CreateTicketPage extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -87,12 +75,15 @@ class CreateTicketPage extends Component {
         const accountId = data.get("accountId");
         const ticketTypeId = data.get("ticketTypeId");
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(createTicketUrl +"/"+ accountId +"/"+ ticketTypeId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {

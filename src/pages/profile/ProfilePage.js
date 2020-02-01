@@ -28,13 +28,15 @@ class ProfilePage extends Component {
         } else {
             this.setState({isClient : false})
         }
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getProfilesUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
                 'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())

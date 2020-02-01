@@ -3,6 +3,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import '../../styles/Forms.css'
 import {createCourseUrl, getAllTrainers} from '../../constants';
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME,
+    USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class CreateCoursePage extends Component {
 
@@ -24,12 +28,15 @@ class CreateCoursePage extends Component {
     }
 
     componentDidMount() {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getAllTrainers, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -48,35 +55,44 @@ class CreateCoursePage extends Component {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        let object = {};
-        data.forEach(function (value, key) {
-            object[key] = value;
-        });
-        let json = JSON.stringify(object);
+        let beginDate = data.get('beginDate');
+        let endDate = data.get('endDate');
+        console.log(data.get('beginDate'));
+        if(beginDate > endDate) {
+            alert('Začátek kurzu nemůže být větší než konec kurzu');
+        } else {
+            let object = {};
+            data.forEach(function (value, key) {
+                object[key] = value;
+            });
+            let json = JSON.stringify(object);
 
-        const trainerId = data.get("trainerId");
+            const trainerId = data.get("trainerId");
 
-        console.log(data.get("trainerId"))
 
-        fetch(createCourseUrl + trainerId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: json
-        }).then(function (response) {
-            if(response.ok) {
-                alert("Kurz byl vytvořen");
-                window.location = '/course';
-            } else {
-                alert("Kurz se nepodařilo vytvořit");
-            }
-        }).then(function (text) {
-        }).catch(function (error) {
-            console.error(error)
-        });
+            const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+            const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+            fetch(createCourseUrl + trainerId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization' : AuthenticationService.createBasicAuthToken(username, password)
+                },
+                body: json
+            }).then(function (response) {
+                if(response.ok) {
+                    alert("Kurz byl vytvořen");
+                    window.location = '/course';
+                } else {
+                    alert("Kurz se nepodařilo vytvořit");
+                }
+            }).then(function (text) {
+            }).catch(function (error) {
+                console.error(error)
+            });
+        }
     }
 
 

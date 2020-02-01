@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {createTicketTypeUrl} from "../../constants";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME,
+    USER_NAME_SESSION_ATTRIBUTE_PASSWORD
+} from "../../components/authentication/AuthenticationService";
 
 class CreateTicketTypePage extends Component {
 
@@ -28,13 +32,15 @@ class CreateTicketTypePage extends Component {
             object[key] = value;
         });
         let json = JSON.stringify(object);
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(createTicketTypeUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             },
             body: json
         }).then(function (response) {

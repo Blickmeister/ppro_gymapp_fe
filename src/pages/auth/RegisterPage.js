@@ -2,14 +2,16 @@ import React, {Component} from 'react';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {createAccountAdminUrl, createAccountUrl, getRolesUrl} from "../../constants";
-import {USER_NAME_SESSION_ATTRIBUTE_ROLE} from "../../components/authentication/AuthenticationService";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
+    USER_NAME_SESSION_ATTRIBUTE_ROLE
+} from "../../components/authentication/AuthenticationService";
 
 class RegisterPage extends Component {
 
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
         this.state = {
             roles: [],
             role: '',
@@ -18,12 +20,15 @@ class RegisterPage extends Component {
     }
 
     componentDidMount() {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getRolesUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -40,9 +45,6 @@ class RegisterPage extends Component {
         }
     }
 
-    handleChange = (event) => {
-    }
-
     handleSubmit(event) {
         event.preventDefault();
         const data = new FormData(event.target);
@@ -55,21 +57,22 @@ class RegisterPage extends Component {
         let json = JSON.stringify(object);
 
         const roleName = data.get("roleName");
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         if(this.state.isAdmin) {
             fetch(createAccountAdminUrl + roleName, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Credentials': true,
-                    'Access-Control-Allow-Origin': '*'
-                    /*'authorization': AuthenticationService.createBasicAuthToken
-                    (sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME),
-                        sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))*/
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization' : AuthenticationService.createBasicAuthToken(username, password)
                 },
                 body: json
             }).then(function (response) {
                 if(response.ok) {
                     alert("Účet byl vytvořen");
+                    window.location = '/';
                 } else {
                     alert("Účet se nepodařilo vytvořit");
                 }
@@ -84,15 +87,13 @@ class RegisterPage extends Component {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Credentials': true,
-                    'Access-Control-Allow-Origin': '*'
-                    /*'authorization': AuthenticationService.createBasicAuthToken
-                    (sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME),
-                        sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD))*/
+                    'Access-Control-Allow-Origin': '*',
                 },
                 body: json
             }).then(function (response) {
                 if(response.ok) {
                     alert("Účet byl vytvořen");
+                    window.location = '/';
                 } else {
                     alert("Účet se nepodařilo vytvořit");
                 }
@@ -107,7 +108,7 @@ class RegisterPage extends Component {
     render() {
         const isAdmin = this.state.isAdmin;
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit} className="forms">
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Jméno</Form.Label>
                     <Form.Control name="firstName" type="text" placeholder="Vaše jméno" required/>

@@ -24,12 +24,15 @@ class TicketDetailPage extends Component {
     componentDidMount() {
         console.log("ID: " + this.props.match.params.id)
 
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getTicketDetailUrl + this.props.match.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -41,13 +44,16 @@ class TicketDetailPage extends Component {
             }).catch((err) => console.error(err));
     }
 
-    handleDelete = (event) => {
+    handleDelete = () => {
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(removeTicketUrl + this.props.match.params.id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then(function (response) {
@@ -57,7 +63,7 @@ class TicketDetailPage extends Component {
                 } else {
                     alert("Permanentku se nepodařilo smazat");
                 }
-            }).then((text) => {
+            }).then(() => {
         }).catch((err) => console.error(err));
 
     }

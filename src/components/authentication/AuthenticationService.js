@@ -25,21 +25,11 @@ class AuthenticationService {
             {sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_ID, id)}})
     }
 
-    /*executeJwtAuthenticationService(username, password) {
-        console.log(username);
-        return axios.post(`${postloginUrl}`, {
-            username,
-            password
-        })
-    }*/
-
     createBasicAuthToken(username, password) {
         return 'Basic ' + window.btoa(username + ":" + password)
     }
 
     registerSuccessfulLogin(username, password) {
-        //let basicAuthHeader = 'Basic ' +  window.btoa(username + ":" + password)
-        //console.log('registerSuccessfulLogin')
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username)
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD, password)
         this.setupAxiosInterceptors(this.createBasicAuthToken(username, password))

@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import TicketsData from '../../components/tickets/TicketsData';
 import {getEntrancesUrl,getEntranceValidationUrl} from '../../constants';
 import '../../styles/Table.css'
 import Loader from "react-loader-spinner";
-import {USER_NAME_SESSION_ATTRIBUTE_ROLE} from "../../components/authentication/AuthenticationService";
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
+    USER_NAME_SESSION_ATTRIBUTE_ROLE
+} from "../../components/authentication/AuthenticationService";
 import EntrancesData from "../../components/tickets/EntrancesData";
 
 class TicketEntrancePage extends Component {
@@ -14,25 +16,26 @@ class TicketEntrancePage extends Component {
             entrances: [],
             loading: true,
             isValid : true,
-            isEmployee : false
+            isEmployee : false,
         };
     }
 
     componentDidMount() {
         const roleName = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
-
         if (roleName === 'Employee' || roleName === 'Admin') {
             this.setState({isEmployee: true})
         } else {
             this.setState({isEmployee: false})
         }
-
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
         fetch(getEntrancesUrl + this.props.match.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())
@@ -46,7 +49,8 @@ class TicketEntrancePage extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Credentials': true,
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'authorization' : AuthenticationService.createBasicAuthToken(username, password)
             }
         })
             .then((response) => response.json())

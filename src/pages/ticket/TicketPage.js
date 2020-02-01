@@ -3,11 +3,10 @@ import TicketsData from '../../components/tickets/TicketsData';
 import {getTicketsByAccountUrl, getTicketsUrl} from '../../constants';
 import '../../styles/Table.css'
 import Loader from "react-loader-spinner";
-import {
-    USER_NAME_SESSION_ATTRIBUTE_ID,
+import AuthenticationService, {
+    USER_NAME_SESSION_ATTRIBUTE_ID, USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
     USER_NAME_SESSION_ATTRIBUTE_ROLE
 } from "../../components/authentication/AuthenticationService";
-import {Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 class TicketPage extends Component {
@@ -17,7 +16,8 @@ class TicketPage extends Component {
         this.state = {
             ticketsData: [],
             loading: true,
-            isEmployee: false
+            isEmployee: false,
+            isTrainer : false
         };
     }
 
@@ -29,14 +29,21 @@ class TicketPage extends Component {
         } else {
             this.setState({isEmployee: false})
         }
-
-        if (roleName === 'Employee' || roleName === 'Admin') {
+        if (roleName === 'Trainer') {
+            this.setState({isTrainer: true})
+        } else {
+            this.setState({isTrainer: false})
+        }
+        const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
+        if (roleName === 'Employee' || roleName === 'Admin' || roleName === 'Trainer') {
             fetch(getTicketsUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Credentials': true,
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization' : AuthenticationService.createBasicAuthToken(username, password)
                 }
             })
                 .then((response) => response.json())
@@ -52,7 +59,8 @@ class TicketPage extends Component {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Credentials': true,
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    'authorization' : AuthenticationService.createBasicAuthToken(username, password)
                 }
             })
                 .then((response) => response.json())
@@ -63,18 +71,17 @@ class TicketPage extends Component {
         }
     }
 
-
     render() {
-        const {ticketsData, loading} = this.state;
-        const isEmployee = this.state.isEmployee;
+        const {ticketsData, loading, isEmployee, isTrainer} = this.state;
         return (
             <div className="tables">
                 {isEmployee &&
                 <div>
                     <h2>Přehled permanentek</h2>
-                    <Link to="/ticket/create" className="btn btn-primary">Vytvořit novou permanentku</Link>
+                    <Link to="/ticket/create" className="btn btn-primary btn-create">Vytvořit novou permanentku</Link>
                 </div>}
-                {!isEmployee && <h2>
+                {isTrainer && <h2>Přehled permanentek</h2>}
+                {!isEmployee && !isTrainer && <h2>
                     Přehled vašich permanentek
                 </h2>}
                 {loading ? <Loader type="Puff" color="#00BFFF" height={100} width={100} timeout={3000}/> :

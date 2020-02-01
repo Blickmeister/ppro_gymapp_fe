@@ -19,7 +19,7 @@ class ActualUserProfileData extends Component {
                                         <tbody>
                                         <tr>
                                             <td><b>Jméno:</b></td>
-                                            <td>{profileData.firstName}</td>
+                                            <td>{profileData.firstName} {profileData.lastName}</td>
                                         </tr>
                                         <tr>
                                             <td><b>Login:</b></td>
