@@ -5,10 +5,6 @@ import {Link} from "react-router-dom";
 
 class SideBar extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const roleName = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_ROLE);
         let isAdmin = false;

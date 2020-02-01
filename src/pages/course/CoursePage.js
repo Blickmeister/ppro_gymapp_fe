@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import CoursesData from "../../components/courses/CoursesData";
 import Loader from 'react-loader-spinner'
-import AuthenticationService, {
-    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD, USER_NAME_SESSION_ATTRIBUTE_ROLE
+import {
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_ROLE
 } from "../../components/authentication/AuthenticationService";
 import CoursesDataTrainer from "../../components/courses/CourseDataTrainer";
 import {getCoursesUrl, getUserSignedCoursesUrl} from "../../constants";

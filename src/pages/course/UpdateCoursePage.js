@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import React, {Component} from "react";
-import {getAccountDetailUrl, getAllTrainers, removeCourseUrl, updateCourseUrl} from "../../constants";
+import {getAccountDetailUrl, getAllTrainers, updateCourseUrl} from "../../constants";
 import AuthenticationService, {
     USER_NAME_SESSION_ATTRIBUTE_NAME,
     USER_NAME_SESSION_ATTRIBUTE_PASSWORD

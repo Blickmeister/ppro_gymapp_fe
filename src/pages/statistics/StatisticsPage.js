@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import AuthenticationService, {
-    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,USER_NAME_SESSION_ATTRIBUTE_ROLE
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD
 }
     from "../../components/authentication/AuthenticationService";
 import {getAverageNumberOFEntrancesUrl, getCountOfEntrancesUrl, getFavouriteDayUrl} from "../../constants";

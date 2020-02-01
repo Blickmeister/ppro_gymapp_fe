@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import '../../styles/Table.css';
 import '../../styles/Detail.css';
-import {getTicketDetailUrl, removeCourseUrl, removeTicketUrl} from "../../constants";
+import {getTicketDetailUrl, removeTicketUrl} from "../../constants";
 import AuthenticationService, {
-    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD,
-    USER_NAME_SESSION_ATTRIBUTE_ROLE
+    USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_PASSWORD
 } from "../../components/authentication/AuthenticationService";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";

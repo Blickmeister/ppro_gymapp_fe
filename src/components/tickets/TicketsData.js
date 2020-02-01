@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../../styles/Table.css';
 import {Link} from "react-router-dom";
-import {USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_SESSION_ATTRIBUTE_ROLE
+import {USER_NAME_SESSION_ATTRIBUTE_ROLE
 } from "../authentication/AuthenticationService";
 
 class TicketsData extends Component {

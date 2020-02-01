@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import AuthenticationService from '../../components/authentication/AuthenticationService';
-import {CloseButton} from "react-bootstrap";
 
 class LoginComponent extends Component {
 
@@ -52,7 +51,7 @@ class LoginComponent extends Component {
 
     render() {
         let renderMessage = false;
-        if (this.props.location.message != undefined) {
+        if (this.props.location.message !== undefined) {
             renderMessage = true;
         }
         return (
