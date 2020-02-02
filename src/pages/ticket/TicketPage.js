@@ -17,7 +17,8 @@ class TicketPage extends Component {
             ticketsData: [],
             loading: true,
             isEmployee: false,
-            isTrainer : false
+            isTrainer : false,
+            isAdmin : false
         };
     }
 
@@ -33,6 +34,11 @@ class TicketPage extends Component {
             this.setState({isTrainer: true})
         } else {
             this.setState({isTrainer: false})
+        }
+        if (roleName === 'Admin') {
+            this.setState({isAdmin: true})
+        } else {
+            this.setState({isAdmin: false})
         }
         const username = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
         const password = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_PASSWORD);
@@ -72,13 +78,14 @@ class TicketPage extends Component {
     }
 
     render() {
-        const {ticketsData, loading, isEmployee, isTrainer} = this.state;
+        const {ticketsData, loading, isEmployee, isTrainer, isAdmin} = this.state;
         return (
             <div className="tables">
                 {isEmployee &&
                 <div>
                     <h2>Přehled permanentek</h2>
-                    <Link to="/ticket/create" className="btn btn-primary btn-create">Vytvořit novou permanentku</Link>
+                    {!isAdmin &&
+                    <Link to="/ticket/create" className="btn btn-primary btn-create">Vytvořit novou permanentku</Link>}
                 </div>}
                 {isTrainer && <h2>Přehled permanentek</h2>}
                 {!isEmployee && !isTrainer && <h2>
